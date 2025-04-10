@@ -25,24 +25,10 @@ fn screen_to_ndc(in:vec2<f32>) -> vec2<f32>{
 	);
 }
 
-// b.x = width
-// b.y = height
-// r.x = roundness top-right  
-// r.y = roundness bottom-right
-// r.z = roundness top-left
-// r.w = roundness bottom-left
-fn sd_rounded_box( point:vec2<f32>,bounds:vec2<f32>, radius:vec4<f32> ) -> f32 {
-	var r = radius;
-	if point.x < 0.0 {
-		r.x  = r.z;
-		r.y  = r.w;
-	}
-	if point.y < 0.0 {
-		r.x = r.y;
-	}
-    let q = abs(point)-bounds+r.x;
-    return min(max(q.x,q.y),0.0) + length(max(q,vec2(0.0))) - r.x;
+fn bezier_curve(t:f32,p1:vec2<f32>,p2:vec2<f32>) -> vec2<f32>{
+	return (1-t) * p1 + t * p2;
 }
+
 @vertex
 fn vs_main(in:VertexInput) -> VertexOutput {
 	var out: VertexOutput;
@@ -57,16 +43,8 @@ fn vs_main(in:VertexInput) -> VertexOutput {
 
 @fragment
 fn fs_main(in:VertexOutput) -> @location(0) vec4<f32> {
-	let center = (position + (size * 0.5)); 
-	let p = in.position.xy - center;
 
-	let d = sd_rounded_box(
-		p,
-		size/2,
-		vec4(corner_radius)
-	);// Might need to clamp radius
-	
-	return vec4(in.color.xyz,-d * in.color.w);
+	return vec4(in.color);
 }
 
 

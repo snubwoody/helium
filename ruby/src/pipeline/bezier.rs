@@ -7,6 +7,7 @@ use crate::{
     vertex::Vertex, Bezier,
 };
 use std::rc::Rc;
+use helium_core::Position;
 
 pub struct BezierPipeline {
     pipeline: wgpu::RenderPipeline,
@@ -104,7 +105,15 @@ impl BezierPipeline {
     pub fn render(&mut self, device: &wgpu::Device, pass: &mut wgpu::RenderPass) {
 		for bezier in self.draw_queue.drain(..){
 			
-			let vertices = Vertex::quad(bezier.size, bezier.position, bezier.color.clone());
+			let vertices = Vertex::bezier(
+				[
+					Position::new(20.0, 20.0),	
+					Position::new(120.0, 100.0),	
+					Position::new(320.0, 50.0),	
+					Position::new(520.0, 120.0),	
+				], 
+				bezier.color.clone()
+			);
 
 			let vertex_buffer = BufferBuilder::new()
 				.label("Bezier vertex buffer")
