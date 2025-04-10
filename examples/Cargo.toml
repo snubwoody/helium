@@ -24,6 +24,10 @@ name = "scroll"
 path = "scroll.rs"
 
 [[example]]
+name = "bezier_curve"
+path = "bezier_curve.rs"
+
+[[example]]
 name = "spotify"
 path = "spotify/spotify.rs"
 
