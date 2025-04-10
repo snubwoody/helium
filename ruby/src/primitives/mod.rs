@@ -3,6 +3,8 @@ mod icon;
 mod image;
 mod rect;
 mod text;
+mod bezier;
+pub use bezier::Bezier;
 pub use circle::Circle;
 pub use icon::Icon;
 pub use image::Image;
