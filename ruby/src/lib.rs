@@ -7,7 +7,7 @@ mod vertex;
 pub use error::{Error,Result};
 pub use helium_core::{IntoColor, Rgba, Size,Color};
 use pipeline::{
-    CirclePipeline, GlobalResources, IconPipeline, ImagePipeline, RectPipeline, TextPipeline,
+    BezierPipeline, CirclePipeline, GlobalResources, IconPipeline, ImagePipeline, RectPipeline, TextPipeline
 };
 pub use primitives::*;
 use std::rc::Rc;
@@ -105,6 +105,7 @@ pub struct Renderer<'r> {
     text_pipeline: TextPipeline,
     image_pipeline: ImagePipeline,
     icon_pipeline: IconPipeline,
+    bezier_pipeline: BezierPipeline,
 }
 
 impl<'r> Renderer<'r> {
@@ -175,6 +176,7 @@ impl<'r> Renderer<'r> {
         let text_pipeline = TextPipeline::new(&device, config.format, Rc::clone(&global));
         let image_pipeline = ImagePipeline::new(&device, config.format, Rc::clone(&global));
         let icon_pipeline = IconPipeline::new(&device, config.format, Rc::clone(&global));
+        let bezier_pipeline = BezierPipeline::new(&device, config.format, Rc::clone(&global));
 
         Ok(Self {
             surface,
@@ -186,6 +188,7 @@ impl<'r> Renderer<'r> {
             text_pipeline,
             image_pipeline,
             icon_pipeline,
+			bezier_pipeline,
             global,
         })
     }
@@ -219,8 +222,28 @@ impl<'r> Renderer<'r> {
 		self.circle_pipeline.draw(circle);
 	}
 	
+	/// Draw text to the screen
+	/// 
+	/// ```no_run
+	/// 
+	/// use ruby::{App,Text,Error};
+	/// 
+	/// #[tokio::main]
+	/// async fn main() -> Result<(),Error>{
+	/// 	let app = App::new().await?;
+	/// 
+	/// 	app.run(|r|{
+	/// 		let text = Text::new("Hello world");
+	/// 		r.draw_text(text);
+	/// 	}).await?;
+	/// }
+	/// ```
 	pub fn draw_text(&mut self, text: primitives::Text){
 		self.text_pipeline.draw(text);
+	}
+
+	pub fn draw_bezier(&mut self, bezier: primitives::Bezier){
+		self.bezier_pipeline.draw(bezier);
 	}
 
     pub fn render(&mut self) {
@@ -260,6 +283,8 @@ impl<'r> Renderer<'r> {
 		self.icon_pipeline.render(&self.queue, &self.device, &mut render_pass);
 		self.image_pipeline.render(&self.queue, &self.device, &mut render_pass);
 		self.circle_pipeline.render(&self.device, &mut render_pass);
+		self.circle_pipeline.render(&self.device, &mut render_pass);
+		self.bezier_pipeline.render(&self.device, &mut render_pass);
 
         // Drop the render pass because it borrows encoder mutably
         std::mem::drop(render_pass);

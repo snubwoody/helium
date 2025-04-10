@@ -3,6 +3,7 @@ mod icon;
 mod image;
 mod rect;
 mod text;
+mod bezier;
 use crate::builders::{BindGroupBuilder, BindGroupLayoutBuilder, BufferBuilder};
 pub use circle::CirclePipeline;
 use helium_core::Size;
@@ -10,6 +11,7 @@ pub use icon::IconPipeline;
 pub use image::ImagePipeline;
 pub use rect::RectPipeline;
 pub use text::TextPipeline;
+pub use bezier::BezierPipeline;
 
 /// Global resources needed by all pipelines
 #[derive(Debug)]

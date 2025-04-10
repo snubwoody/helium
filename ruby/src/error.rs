@@ -1,5 +1,5 @@
 use thiserror::Error;
-use wgpu::{core::instance::RequestAdapterError, RequestDeviceError};
+use wgpu::RequestDeviceError;
 
 pub type Result<T> = std::result::Result<T,Error>;
 
