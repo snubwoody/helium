@@ -70,6 +70,25 @@ impl Vertex {
         return vec![vertex1, vertex2, vertex3, vertex4, vertex5, vertex6];
     }
 
+	pub fn bezier(points:[Position;4], color: impl IntoColor<Rgba>) -> Vec<Self>{
+		let mut vertices = vec![];
+		let color: Color<Rgba> = color.into_color();
+		for i in 1..10{
+			// `t` represents the distance along the curve 
+			// from 0.0 to 1.0
+			let t = i as f32 / 20.0; // precision
+			
+			let p1 = points[0] * (1.0-t).powf(3.0); 
+			let p2 = points[1] * t * 3.0 * (1.0-t).powf(2.0); 
+			let p3 = points[2] * t * t * 3.0 * (1.0-t).powf(2.0); 
+			let p4 = points[3] * t.powf(3.0); 
+			
+			let p = p1 + p2 + p3 + p4;
+			vertices.push(Vertex::new(p.x, p.y, color.normalize()));
+		}
+		vertices
+	}
+
     /// Creates a `Vec` of 6 `Vertices` in a quad layout allowing you to specify
     /// uv coordinates.
     /// The uv's are defined clockwise
