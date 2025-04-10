@@ -1,6 +1,6 @@
 use crate::size::Size;
 use bytemuck::{Pod, Zeroable};
-use std::ops::{AddAssign, SubAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, SubAssign};
 use winit::dpi::PhysicalPosition;
 
 /// The `x` and `y` position of any structure.
@@ -81,7 +81,17 @@ impl Position {
     }
 }
 
+impl Add<Position> for Position{
+	type Output = Self;
+	fn add(mut self, rhs: Position) -> Self::Output {
+		self.x += rhs.x;
+		self.y += rhs.y;
+		self
+	}
+}
+
 impl AddAssign<Position> for Position {
+	/// Performs the `+=` operation for two [`Position`]'s
     fn add_assign(&mut self, rhs: Position) {
         self.x += rhs.x;
         self.y += rhs.y;
@@ -115,6 +125,31 @@ where
         self.x -= rhs;
         self.y -= rhs;
     }
+}
+
+impl<I> MulAssign<I> for Position
+where 
+	I: Copy,
+	f32: MulAssign<I>
+{
+	
+	fn mul_assign(&mut self, rhs: I) {
+		self.x *= rhs;
+		self.y *= rhs;
+	}
+}
+
+impl<I> Mul<I> for Position
+where 
+	I:Copy,
+	f32: MulAssign<I>
+{
+	type Output = Self;
+	fn mul(mut self, rhs: I) -> Self::Output {
+		self.x *= rhs;
+		self.y *= rhs;
+		self
+	}
 }
 
 impl From<PhysicalPosition<f64>> for Position {
